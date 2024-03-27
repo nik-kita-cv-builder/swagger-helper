@@ -1,12 +1,16 @@
 import { createApp } from "vue";
-import "./style.css";
-import App from "./App.vue";
 import VueGoogleSignin from "vue3-google-signin";
+import App from "./App.vue";
+import "./style.css";
 
-console.log(import.meta.env)
+const clientId = new URLSearchParams(window.location.search).get("clientId");
+
+if (!clientId) {
+  console.error("Add '?clientId=...' to the URL.");
+}
 
 createApp(App)
   .use(VueGoogleSignin, {
-    clientId: import.meta.env.VITE_GOOGLE_OAUTH2_CLIENT_ID,
+    clientId,
   })
   .mount("#app");
