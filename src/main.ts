@@ -5,8 +5,6 @@ import "./style.css";
 
 const clientId = new URLSearchParams(window.location.search).get("clientId");
 
-window.location.search = "";
-
 if (!clientId) {
   console.error("Add '?clientId=...' to the URL.");
 }
