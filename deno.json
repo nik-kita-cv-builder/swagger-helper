@@ -5,5 +5,6 @@
     "preview": "deno run -A --node-modules-dir npm:vite preview",
     "serve": "deno run --allow-net --allow-read https://deno.land/std@0.157.0/http/file_server.ts dist/"
   },
-  "exclude": ["ts-mirror", "tsconfig.json"]
+  "exclude": ["ts-mirror", "tsconfig.json"],
+  "lint": {}
 }
