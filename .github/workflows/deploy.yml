@@ -22,6 +22,6 @@ jobs:
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "// TODO add project, update client_id etc"
+          project: "cv-builder-swagger-helper"
           entrypoint: https://deno.land/std@0.220.0/http/file_server.ts
           root: dist
