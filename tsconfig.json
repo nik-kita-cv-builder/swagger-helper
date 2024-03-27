@@ -1,0 +1,12 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "typeRoots": [
+      "ts-mirror/node_modules"
+    ],
+    "lib": [
+      "esnext",
+      "dom"
+    ]
+  }
+}
