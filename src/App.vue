@@ -3,8 +3,11 @@ import { useClipboard } from "@vueuse/core";
 import { ref } from "vue";
 import {
   GoogleSignInButton,
-  type CredentialResponse
+  type CredentialResponse,
+  type ImplicitFlowSuccessResponse,
 } from "vue3-google-signin";
+import GoogleSignInCodeFlow from "./GoogleSignInCodeFlow.vue";
+import InstructionCmp from "./InstructionCmp.vue";
 import { useClientId } from "./useClientId";
 
 const clientIdComposable = useClientId();
@@ -13,40 +16,41 @@ const clientId = clientIdComposable.get();
 
 const source = ref("");
 const { text, copy, copied, isSupported } = useClipboard({ source });
-const handle_success = (res: CredentialResponse) => {
+const handle_success_credential = (res: CredentialResponse) => {
   source.value = res.credential ?? "";
+};
+const handle_success_code = (res: ImplicitFlowSuccessResponse) => {
+  source.value = res.code;
+};
+const handle_fail = (res: unknown) => {
+  let message =
+    "...oops... something went wrong... maybe open console for details";
+
+  try {
+    message = JSON.stringify(res, null, 2);
+  } catch {
+    console.error(res);
+  }
+
+  source.value = message;
 };
 </script>
 
 <template>
   <div v-if="clientId === 'NONE'">
-    <h1>Google login for development purposes</h1>
-    <h2>How it works?</h2>
-    <ol>
-      <li class="pinky">
-        <p>
-          Register this url in your Google Cloud Console app as allowed origin
-        </p>
-        <pre>https://cv-builder-swagger-helper.deno.dev</pre>
-      </li>
-      <li class="yellowy">
-        <p>Navigate to this page from where you need (for example Swagger) with query param</p>
-        <pre>{{"<ahref={`https://cv-builder-swagger-helper.deno.dev/?clientId=\${config.VITE_GOOGLE_CLIENT_ID}`}>Sign-in with google</ahref=>`"}}</pre>
-        <p>P.S.</p>
-        <p>Example above use jsx syntax</p>
-      </li>
-      <li class="greeny">
-        <p>After success login the Copy button will appear with your credential/code from Google</p>
-      </li>
-    </ol>
+    <InstructionCmp />
   </div>
+
   <div v-else class="root">
     <h1>{{ clientId }}</h1>
     <div>
       <pre>
         Using this button return you credential string from Google response.
       </pre>
-      <GoogleSignInButton @success="handle_success" />
+      <GoogleSignInButton
+        @success="handle_success_credential"
+        @error="handle_fail"
+      />
       <div v-if="isSupported">
         <button @click="copy(source)">
           <span v-if="!copied">Copy</span>
@@ -63,7 +67,10 @@ const handle_success = (res: CredentialResponse) => {
       <pre>
         This one - code string from Google response.
       </pre>
-      <button @success="handle_success">Sign in with google</button>
+      <GoogleSignInCodeFlow
+        @success="handle_success_code"
+        @fail="handle_fail"
+      />
       <div v-if="isSupported">
         <button @click="copy(source)">
           <span v-if="!copied">Copy</span>
@@ -78,7 +85,7 @@ const handle_success = (res: CredentialResponse) => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .root {
   display: flex;
   width: 100%;
@@ -103,7 +110,7 @@ const handle_success = (res: CredentialResponse) => {
 pre {
   background-color: grey;
   color: white;
-  padding: 10px
+  padding: 10px;
 }
 
 .long-str-holder {
