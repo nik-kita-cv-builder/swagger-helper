@@ -13,7 +13,6 @@ import { useClientId } from "./useClientId";
 const clientIdComposable = useClientId();
 
 const clientId = clientIdComposable.get();
-
 const source = ref("");
 const { text, copy, copied, isSupported } = useClipboard({ source });
 const handle_success_credential = (res: CredentialResponse) => {
@@ -42,35 +41,28 @@ const handle_fail = (res: unknown) => {
   </div>
 
   <div v-else class="root">
-    <h1>{{ clientId }}</h1>
-    <div>
-      <pre>
-        Using this button return you credential string from Google response.
-      </pre>
-      <GoogleSignInButton
-        @success="handle_success_credential"
-        @error="handle_fail"
-      />
-      <div v-if="isSupported">
-        <button @click="copy(source)">
-          <span v-if="!copied">Copy</span>
-          <span v-else>Copied!</span>
-        </button>
+    <div class="g-buttons">
+      <div>
+        <p>This one - code string from Google response.</p>
+        <GoogleSignInCodeFlow
+          @success="handle_success_code"
+          @fail="handle_fail"
+        />
       </div>
-      <p v-else>
-        Your browser does not support Clipboard API so copy and paste manually.
-      </p>
-      <p v-show="!copied" class="long-str-holder">{{ source }}</p>
+      <hr />
+      <div>
+        <div>
+          <p>
+            Using this button return you credential string from Google response.
+          </p>
+          <GoogleSignInButton
+            @success="handle_success_credential"
+            @error="handle_fail"
+          />
+        </div>
+      </div>
     </div>
-    <hr />
     <div>
-      <pre>
-        This one - code string from Google response.
-      </pre>
-      <GoogleSignInCodeFlow
-        @success="handle_success_code"
-        @fail="handle_fail"
-      />
       <div v-if="isSupported">
         <button @click="copy(source)">
           <span v-if="!copied">Copy</span>
@@ -92,7 +84,13 @@ const handle_fail = (res: unknown) => {
   flex-flow: column nowrap;
   gap: 2rem;
   padding-top: 5%;
-  align-items: center;
+  padding-left: 4rem;
+  align-items: start;
+}
+
+.g-buttons {
+  display: flex;
+  gap: 1rem;
 }
 
 .greeny {

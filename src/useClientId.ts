@@ -1,6 +1,5 @@
+let clientId = "NONE";
 export const useClientId = () => {
-  let clientId = "NONE";
-
   return {
     get() {
       return clientId;

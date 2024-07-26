@@ -6,7 +6,6 @@ import { useClientId } from "./useClientId";
 
 const clientId = new URLSearchParams(window.location.search).get("clientId") ||
   "NONE";
-
 const clientIdComposable = useClientId();
 
 if (!clientId) {
